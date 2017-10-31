@@ -22,9 +22,9 @@ var storageArr = [];
 
 //INITIALIZED A POST TO PASS A FEW SPEC TESTS
 var initialPost = {
-	username: 'Jono',
-	text: 'Do my bidding!',
-	roomname: 'lobby'
+  username: 'Jono',
+  text: 'Do my bidding!',
+  roomname: 'lobby'
 };
 storageArr.push(initialPost);
 
@@ -41,63 +41,60 @@ var requestHandler = function(request, response) {
 
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
-	headers['Content-Type'] = 'text/plain';
+  headers['Content-Type'] = 'text/plain';
 
 
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
   
   //---------------------------
 
-	var urlInfo = url.parse(request.url);
-	var preferredRoute = '/classes/messages';
+  var urlInfo = url.parse(request.url);
+  var preferredRoute = '/classes/messages';
 
-	if (request.method === 'GET' && urlInfo.path === '/classes/messages') {
-		statusCode = 200;
+  if (request.method === 'GET' && urlInfo.path === '/classes/messages') {
+    statusCode = 200;
 
-	  response.writeHead(statusCode, headers);
-	  response.end(JSON.stringify({results: storageArr}));
-	  return;
+    response.writeHead(statusCode, headers);
+    response.end(JSON.stringify({results: storageArr}));
+    return;
 
-	} else if (request.method === 'POST' && urlInfo.path === '/classes/messages') {
-		statusCode = 201;
+  } else if (request.method === 'POST' && urlInfo.path === '/classes/messages') {
+    statusCode = 201;
 
-		//store that data:
-		var body = "";
-	  
-	  request.on('data', function (chunk) {
-	    body += chunk;
-	  });
+    //store that data:
+    var body = '';
+    
+    request.on('data', function (chunk) {
+      body += chunk;
+    });
 
-	  request.on('end', function () {
+    request.on('end', function () {
 
-	  	//parse out the information from the message:
-	  	//ex. username=Test&text=ha&roomname=lobby
-	  	//And store it into the storage array.
-	    storageArr.push(querystring.parse(body));
-	   
-	    response.writeHead(statusCode, headers);
-	    response.end('POST in /classes/messages');
-	  });
+      //parse out the information from the message:
+      //ex. username=Test&text=ha&roomname=lobby
+      //And store it into the storage array.
+      storageArr.push(querystring.parse(body));
+     
+      response.writeHead(statusCode, headers);
+      response.end('POST in /classes/messages');
+    });
 
-	  return;
+    return;
 
+  } else if (request.method === 'POST' && urlInfo.path === '/classes/room') {
+    statusCode = 201;
 
-	} else if (request.method === 'POST' && urlInfo.path === '/classes/room') {
-		statusCode = 201;
+    response.writeHead(statusCode, headers);
+    response.end('POST in /classes/room');
+    return;
 
-	  response.writeHead(statusCode, headers);
-	  response.end('POST in /classes/room');
-	  return;
+  } else {
+    statusCode = 404;
 
-	} else {
-		statusCode = 404;
-
-	  response.writeHead(statusCode, headers);
-	  response.end('Not Found');
-	  return;
-	}
-
-
+    response.writeHead(statusCode, headers);
+    response.end('Not Found');
+    return;
+  }
 };
 
 
