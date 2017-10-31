@@ -36,20 +36,20 @@ var requestHandler = function(request, response) {
     'access-control-allow-origin': '*',
     'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'access-control-allow-headers': 'content-type, accept',
-    'access-control-max-age': 10 // Seconds.
+    'access-control-max-age': 10, // Seconds.
+    'Content-Type': 'text/plain'
   };
 
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
-  headers['Content-Type'] = 'text/plain';
 
+  headers['Content-Type'] = request.headers['content-type'];
 
-  console.log('Serving request type ' + request.method + ' for url ' + request.url);
+  console.log('Serving request type ' + request.method + ' for url ' + request.url + ' ' + headers['Content-Type']);
   
   //---------------------------
 
   var urlInfo = url.parse(request.url);
-  var preferredRoute = '/classes/messages';
 
   if (request.method === 'GET' && urlInfo.path === '/classes/messages') {
     statusCode = 200;
@@ -73,6 +73,7 @@ var requestHandler = function(request, response) {
       //parse out the information from the message:
       //ex. username=Test&text=ha&roomname=lobby
       //And store it into the storage array.
+      // var incomingData = querystring.parse(body);
       storageArr.push(querystring.parse(body));
      
       response.writeHead(statusCode, headers);
@@ -95,6 +96,7 @@ var requestHandler = function(request, response) {
     response.end('Not Found');
     return;
   }
+
 };
 
 
